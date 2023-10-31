@@ -1,5 +1,6 @@
 using Messenger.Database;
 using Messenger.Database.Models;
+using Messenger.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ builder.Services.AddIdentity<User, UserRole>(
     ).AddEntityFrameworkStores<Dbcontext>()
     .AddRoleStore<RoleStore<UserRole, Dbcontext, Guid>>()
     .AddUserStore<UserStore<User, UserRole, Dbcontext, Guid>>()
+    .AddUserManager<CustomUserManager>()
     .AddDefaultTokenProviders();
 
 
