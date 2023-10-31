@@ -1,3 +1,3 @@
 # Messenger
 
-Currnetly Working Full stack Messenger Web App 
+Currnetly Working on Building Full stack Messenger Web App 
