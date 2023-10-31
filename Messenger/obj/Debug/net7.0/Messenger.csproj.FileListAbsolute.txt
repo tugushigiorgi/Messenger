@@ -74,3 +74,4 @@ C:\Users\Giorgi\RiderProjects\Messenger\Messenger\obj\Debug\net7.0\refint\Messen
 C:\Users\Giorgi\RiderProjects\Messenger\Messenger\obj\Debug\net7.0\Messenger.pdb
 C:\Users\Giorgi\RiderProjects\Messenger\Messenger\obj\Debug\net7.0\Messenger.genruntimeconfig.cache
 C:\Users\Giorgi\RiderProjects\Messenger\Messenger\obj\Debug\net7.0\ref\Messenger.dll
+C:\Users\Giorgi\RiderProjects\Messenger\Messenger\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

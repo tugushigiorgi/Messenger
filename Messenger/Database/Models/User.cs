@@ -8,5 +8,9 @@ public class User:IdentityUser<Guid>
     [Required]
     public string Surname { get; set; }
     
+    public string RefreshToken { get; set; }
+    public DateTime RefreshTokenExpiration { get; set; }
+    
+    
     
 }

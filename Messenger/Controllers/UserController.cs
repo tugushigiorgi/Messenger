@@ -1,6 +1,8 @@
+using Messenger.Data_Transfer_Objects.Auth;
 using Messenger.Data_Transfer_Objects.Controller_Response_Dto_s;
 using Messenger.Data_Transfer_Objects.UserDto_s;
 using Messenger.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Messenger.Controllers;
@@ -15,6 +17,7 @@ public class UserController :ControllerBase
         _UserRepo = userrepo;
     }
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<ActionResult> RegisterUser(RegisterDto dto)
     {
         var result = await _UserRepo.RegisterUser(dto);
@@ -24,9 +27,28 @@ public class UserController :ControllerBase
         return BadRequest(result);
 
     }
+    
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<ActionResult> Login(LoginDto dto)
+    {
+        var result = await _UserRepo.Login(dto);
+        if (result.isSucces) return Ok(result);
 
-    
-    
-    
+        return BadRequest(result);
+        
+
+
+
+
+
+    }
+
+
+    [HttpPost("test")]
+    public string test() => "succcess";
+
+
+
 
 }
