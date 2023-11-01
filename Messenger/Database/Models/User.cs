@@ -13,6 +13,7 @@ public class User:IdentityUser<Guid>
     
     public ProfilePhoto? Profilephoto { get; set; }
     
+    
      
         
      
