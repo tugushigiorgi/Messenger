@@ -13,5 +13,9 @@ public interface IUserService
 
     public Task<LoginResponseDto> RefreshToken(RefreshTokenDto dto);
 
+    
+    public Task<ControllerResponse> UploadProfilePhoto(IFormFile file,Guid CurrentUserId);
+    
+
 
 }

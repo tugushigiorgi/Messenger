@@ -11,6 +11,11 @@ public class User:IdentityUser<Guid>
     public string RefreshToken { get; set; }
     public DateTime RefreshTokenExpiration { get; set; }
     
+    public ProfilePhoto? Profilephoto { get; set; }
+    
+     
+        
+     
     
     
 }

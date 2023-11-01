@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Messenger.Data_Transfer_Objects.Auth;
 using Messenger.Data_Transfer_Objects.Controller_Response_Dto_s;
 using Messenger.Data_Transfer_Objects.UserDto_s;
@@ -45,10 +46,6 @@ public class UserController :ControllerBase
     }
 
 
-    [HttpPost("test")]
-    public string test() => "succcess";
-
-
     [AllowAnonymous]
     [HttpPost("refreshtoken")]
     public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenDto dto)
@@ -62,6 +59,47 @@ public class UserController :ControllerBase
 
 
 
+    }
+
+
+
+    
+    [HttpPost("uploadprofilephoto")]
+    public async Task<ActionResult> UploadProfilePhoto([FromForm] IFormFile Image)
+    {
+        var currentUserid = GetCurrentUserId();
+        if (currentUserid == Guid.Empty) return BadRequest();
+        
+        var result = await _UserRepo.UploadProfilePhoto(Image, currentUserid);
+        if (result.IsSucces) return Ok(result);
+
+        return BadRequest(result);
+
+
+
+
+    }
+
+
+
+
+    [NonAction]
+    private Guid GetCurrentUserId()
+    {
+        try
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Guid.Empty;
+            Guid.TryParse(userIdClaim.Value, out Guid userId);
+            return userId;
+
+        }
+        catch (Exception ex)
+        {
+            return Guid.Empty;
+        }
+        
+        
     }
 
 

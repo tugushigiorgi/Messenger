@@ -156,12 +156,60 @@ public class UserRepository : IUserService
 
 
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
+    public async  Task<ControllerResponse> UploadProfilePhoto(IFormFile file,Guid CurrentUserId)
+    {
+        var getuser = await _userManager.FindByIdAsync(CurrentUserId.ToString());
+        
+        
+        var uploadLocation = _configuration["ProfilePhotosDir"];
+        var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+        var filePath = Path.Combine(uploadLocation!, uniqueFileName);
+        try
+        {
+            await using(var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+        }
+        catch (Exception e)
+        {
+            return new ControllerResponse
+            {
+                IsSucces = false, Message = $"Error While Coping file to the Directory "
+            };
+        }
+
+        var Profilephoto = new ProfilePhoto
+        {
+            user = getuser!,
+            FileName = file.FileName,
+            PublicUrl = $"/{uploadLocation}/{uniqueFileName}",
+            FileType = file.ContentType,
+            FileExtension = Path.GetExtension(file.FileName),
+            FileSize = file.Length,
+            UploadDateTime = DateTime.UtcNow,
+        };
+
+        _dbcontext.ProfilePhoto.Add(Profilephoto);
+
+
+        try
+        {
+            await  _dbcontext.SaveChangesAsync();
+            
+        }
+        catch (Exception e)
+        {
+            return new ControllerResponse
+            {
+                IsSucces = false, Message = "Error While Saving in Database"
+            };
+        }
+        return new ControllerResponse
+        {
+            IsSucces = true, Message = "Profile Photo Uploaded Succesfully"
+        };
+
+    }
 }
