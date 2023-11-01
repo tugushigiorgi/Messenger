@@ -10,7 +10,8 @@ public interface IUserService
     public Task<ControllerResponse> RegisterUser(RegisterDto dto);
 
     public Task<LoginResponseDto> Login(LoginDto dto);
-    
+
+    public Task<LoginResponseDto> RefreshToken(RefreshTokenDto dto);
 
 
 }

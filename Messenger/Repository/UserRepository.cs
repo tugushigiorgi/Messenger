@@ -1,6 +1,7 @@
 using Messenger.Data_Transfer_Objects.Auth;
 using Messenger.Data_Transfer_Objects.Controller_Response_Dto_s;
 using Messenger.Data_Transfer_Objects.UserDto_s;
+using Messenger.Database;
 using Messenger.Database.Models;
 using Messenger.Services;
 
@@ -11,11 +12,13 @@ public class UserRepository : IUserService
     private CustomUserManager _userManager;
     private IjwtService _jwtService;
     private IConfiguration _configuration;
-    public UserRepository(IConfiguration configuration,IjwtService jwtService ,CustomUserManager manager)
+    private Dbcontext _dbcontext;
+    public UserRepository(Dbcontext dbcontext,IConfiguration configuration,IjwtService jwtService ,CustomUserManager manager)
     {
         _userManager = manager;
         _jwtService = jwtService;
          _configuration = configuration;
+         _dbcontext = dbcontext;
     }
 
 
@@ -99,8 +102,8 @@ public class UserRepository : IUserService
 
         var refreshToken = Guid.NewGuid().ToString();
         getuser.RefreshToken = refreshToken;
-        getuser.RefreshTokenExpiration=DateTime.Now.AddMinutes(Double.Parse(_configuration["Jwt:REFRESH_TOKEN_EXPIRATION_DAYS"]!));
-
+        getuser.RefreshTokenExpiration=DateTime.Now.AddMinutes(double.Parse(_configuration["Jwt:REFRESH_TOKEN_EXPIRATION_DAYS"]!));
+       await  _dbcontext.SaveChangesAsync();
 
         return new LoginResponseDto
         {
@@ -113,4 +116,52 @@ public class UserRepository : IUserService
 
     }
 
+
+
+    public async Task<LoginResponseDto> RefreshToken(RefreshTokenDto dto)
+    {
+        
+        
+        var checkTokenValidation = _jwtService.ValidateExpiredToken(dto.AccessToken);
+        if (!checkTokenValidation) return new LoginResponseDto { isSucces = false,message = "Acces Token is Invalid"};
+
+        var getuser = _userManager.GetUserByRefreshToken(dto.RefreshToken);
+        if (getuser == null) return new LoginResponseDto { isSucces = false, message = "Refresh Token is Invalid" };
+
+        if (getuser.RefreshTokenExpiration >= DateTime.Now)
+        {
+            var newRefreshToken = Guid.NewGuid().ToString();
+            var NewToken = _jwtService.CreateToken(getuser.Email, getuser.Id.ToString());
+            getuser.RefreshTokenExpiration =
+                DateTime.Now.AddDays(double.Parse(_configuration["Jwt:REFRESH_TOKEN_EXPIRATION_DAYS"]!));
+
+            getuser.RefreshToken = newRefreshToken;
+
+            await _dbcontext.SaveChangesAsync();
+            
+            
+            
+            
+            return new LoginResponseDto { Token = NewToken,RefreshToken = newRefreshToken,isSucces = true};
+            
+
+
+
+
+        }
+
+        return new LoginResponseDto { message = "Refresh token is Expired",isSucces = false};
+
+
+
+
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 }

@@ -7,8 +7,8 @@ public interface IjwtService
 {
 
     public string CreateToken(string Email,String UserId);
-    
-    
+
+    public bool ValidateExpiredToken(string token);
 
 
 

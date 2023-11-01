@@ -18,7 +18,7 @@ public class UserController :ControllerBase
     }
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<ActionResult> RegisterUser(RegisterDto dto)
+    public async Task<ActionResult> RegisterUser([FromBody]RegisterDto dto)
     {
         var result = await _UserRepo.RegisterUser(dto);
 
@@ -30,7 +30,7 @@ public class UserController :ControllerBase
     
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<ActionResult> Login(LoginDto dto)
+    public async Task<ActionResult> Login([FromBody]LoginDto dto)
     {
         var result = await _UserRepo.Login(dto);
         if (result.isSucces) return Ok(result);
@@ -49,6 +49,20 @@ public class UserController :ControllerBase
     public string test() => "succcess";
 
 
+    [AllowAnonymous]
+    [HttpPost("refreshtoken")]
+    public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenDto dto)
+    {
+      var result = await  _UserRepo.RefreshToken(dto);
+      if (result.isSucces) return Ok(result);
+
+      return BadRequest(result);
+
+
+
+
+
+    }
 
 
 }

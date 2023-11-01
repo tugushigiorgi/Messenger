@@ -14,10 +14,20 @@ public class CustomUserManager :UserManager<User>
     {
         _dbcontext = db;
     }
-    
-    
-    
-    
+
+
+
+    public User? GetUserByRefreshToken(string refreshtoken)
+    {
+        var getuser = _dbcontext.Users.SingleOrDefault(usr => usr.RefreshToken == refreshtoken);
+
+        return getuser;
+
+
+
+
+
+    }
     
     
     

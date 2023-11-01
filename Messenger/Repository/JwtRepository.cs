@@ -48,4 +48,49 @@ public class JwtRepository :IjwtService
 
 
     }
+
+
+
+
+
+    public bool ValidateExpiredToken(string token)
+    {
+        var  securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!) );
+
+         var validatedescriptor = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = _configuration["Jwt:Issuer"],
+            ValidAudience = _configuration["Jwt:Audience"],
+            IssuerSigningKey=securityKey 
+        };
+        
+        
+        
+        
+          var handelr= new JwtSecurityTokenHandler();
+          try
+          {
+              handelr.ValidateToken(token, validatedescriptor, out SecurityToken outtoken);
+
+              return outtoken != null;
+          }
+          catch (Exception e)
+          {
+              return false;
+          }
+
+             
+
+
+
+    }
+
+
+
+
+
 }
